@@ -1,11 +1,14 @@
 package com.atoudeft.serveur;
 
 import com.atoudeft.banque.Banque;
+import com.atoudeft.banque.CompteClient;
 import com.atoudeft.banque.serveur.ConnexionBanque;
 import com.atoudeft.banque.serveur.ServeurBanque;
 import com.atoudeft.commun.evenement.Evenement;
 import com.atoudeft.commun.evenement.GestionnaireEvenement;
 import com.atoudeft.commun.net.Connexion;
+
+import java.util.Objects;
 
 /**
  * Cette classe représente un gestionnaire d'événement d'un serveur. Lorsqu'un serveur reçoit un texte d'un client,
@@ -56,6 +59,34 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                 case "LIST": //Envoie la liste des numéros de comptes-clients connectés :
                     cnx.envoyer("LIST " + serveurBanque.list());
                     break;
+
+                case "CONNECT":
+
+                    argument = evenement.getArgument();
+                    t = argument.split(":");
+
+                    numCompteClient = t[0];
+                    nip = t[1];
+
+                    t = serveurBanque.list().split(":");
+
+                    for (String client: t) {
+                        if (Objects.equals(client, numCompteClient)) {
+                        cnx.envoyer("CONNECT NO");
+                        }
+                    }
+
+                    if (!Objects.equals(nip, serveurBanque.getBanque().getCompteClient(numCompteClient).getNip())){
+                        cnx.envoyer("CONNECT NO");
+                    }
+                    else {
+                        cnx.setNumeroCompteClient(numCompteClient);
+                        // ajouter compte cheque ici
+                        cnx.envoyer("CONNECT NO");
+                    }
+
+                    break;
+
                 /******************* COMMANDES DE GESTION DE COMPTES *******************/
                 case "NOUVEAU": //Crée un nouveau compte-client :
                     if (cnx.getNumeroCompteClient()!=null) {
