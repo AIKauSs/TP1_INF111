@@ -1,4 +1,4 @@
-package com.atoudeft.serveur;
+kage com.atoudeft.serveur;
 
 import com.atoudeft.banque.Banque;
 import com.atoudeft.banque.CompteClient;
@@ -114,9 +114,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
 
                 /********************** COMMANDES DE GESTION DU CAPITAL *******************/
                 case "DEPOT": // Permet au client de créditer son compte
-                    if (cnx.getNumeroCompteClient() == null) {
-                        cnx.envoyer("DEPOT NO compte non trouvé");
-                    } else {
                         // Récupérer l'argument (ex : "200")
                         argument = evenement.getArgument().trim();
                         
@@ -125,8 +122,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                             if (montant <= 0) {
                                 cnx.envoyer("DEPOT NO montant invalide");
                             } else {
-                                Banque banque = cnx.getBanque();
-                                String numCompteClient = cnx.getNumeroCompteClient();
                                 String numCompteActuel = cnx.getNumeroCompteActuel();
                                 
                                 // Trouver le compte bancaire du client
@@ -147,13 +142,9 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         } catch (NumberFormatException e) {
                             cnx.envoyer("DEPOT NO Montant invalide");
                         }
-                    }
                     break;
 
                     case "RETRAIT": // Permet au client de retirer de l'argent d'un de ses comptes
-                        if (cnx.getNumeroCompteClient() == null) {
-                            cnx.envoyer("RETRAIT NO compte non trouvé");
-                        } else {
                             // Récupérer l'argument (ex : "200")
                             argument = evenement.getArgument().trim();
                             
@@ -163,8 +154,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                 if (montant <= 0) {
                                     cnx.envoyer("RETRAIT NO montant invalide");
                                 } else {
-                                    Banque banque = cnx.getBanque();
-                                    String numCompteClient = cnx.getNumeroCompteClient();
                                     String numCompteActuel = cnx.getNumeroCompteActuel();
 
                                     // Récupérer le compte bancaire actuel
@@ -202,15 +191,11 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                             } catch (NumberFormatException e) {
                                 cnx.envoyer("RETRAIT NO Montant invalide");
                             }
-                        }
                         break;
 
     
     
                     case "TRANSFER": // Permet de transférer de l'argent d'un compte à un autre
-                        if (cnx.getNumeroCompteClient() == null) {
-                            cnx.envoyer("TRANSFER NO compte origine non trouvé");
-                        } else {
                             // Découper les arguments (par exemple : "1000 numCompteDest")
                             argument = evenement.getArgument().trim();
                             String[] args = argument.split(" ");
@@ -226,8 +211,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                         cnx.envoyer("TRANSFER NO montant invalide");
                                     } else {
                                         double frais = 0;
-                                        Banque banque = cnx.getBanque();
-                                        String numCompteClient = cnx.getNumeroCompteClient();
                                         String numCompteActuel = cnx.getNumeroCompteActuel();
 
                                         // Vérifier le compte source
@@ -269,37 +252,28 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                     cnx.envoyer("TRANSFER NO Montant invalide");
                                 }
                             }
-                        }
                         break;
 
 
                 case "FACTURE": // Payer une facture
-                    // Vérifier la connexion du client
-                    if (cnx.getNumeroCompteClient() == null) {
-                        cnx.envoyer("FACTURE NO client non trouvé");
-                    } else {
                         // Vérifier la validité des arguments
                         argument = evenement.getArgument().trim();
-                        String[] args = argument.split(" ", 3); // Diviser l'argument en 3 parties
+                        String[] argsF = argument.split(" ", 3); // Diviser l'argument en 3 parties
                         if (args.length != 3) {
                             cnx.envoyer("FACTURE NO arguments invalides");
-                            break;
                         } else {
                             try {
                                 // Récupérer les informations de la facture
-                                double montant = Double.parseDouble(args[0]);
-                                String numFacture = args[1];
-                                String description = args[2];
+                                double montant = Double.parseDouble(argsF[0]);
+                                String numFacture = argsF[1];
+                                String description = argsF[2];
 
                                 // Vérifier que le montant est valide
                                 if (montant <= 0) {
                                     cnx.envoyer("FACTURE NO montant invalide");
                                     break;
                                 }
-
-                                // Récupérer le compte du client
-                                String numCompteClient = cnx.getNumeroCompteClient();
-                                Banque banque = cnx.getBanque();  // On suppose que la banque est accessible via la connexion
+                                //verifier existance du client
                                 CompteClient client = banque.getCompteClient(numCompteClient);
                                 if (client == null) {
                                     cnx.envoyer("FACTURE NO compte client introuvable");
@@ -309,6 +283,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                 // Récupérer le compte bancaire actuel du client
                                 String numCompteActuel = cnx.getNumeroCompteActuel(); // Le numéro de compte actuellement sélectionné
                                 CompteBancaire compte = client.getCompteBancaire(numCompteActuel);
+                                    //verifier sélection d'un compte valide
                                 if (compte == null) {
                                     cnx.envoyer("FACTURE NO compte bancaire introuvable");
                                     break;
@@ -341,7 +316,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                 cnx.envoyer("FACTURE NO Montant invalide");
                             }
                         }
-                    }
                     break;
 
                 /******************* TRAITEMENT PAR DÉFAUT *******************/
