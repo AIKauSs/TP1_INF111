@@ -60,32 +60,6 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     cnx.envoyer("LIST " + serveurBanque.list());
                     break;
 
-                case "CONNECT":
-
-                    argument = evenement.getArgument();
-                    t = argument.split(":");
-
-                    numCompteClient = t[0];
-                    nip = t[1];
-
-                    t = serveurBanque.list().split(":");
-
-                    for (String client: t) {
-                        if (Objects.equals(client, numCompteClient)) {
-                        cnx.envoyer("CONNECT NO");
-                        }
-                    }
-
-                    if (!Objects.equals(nip, serveurBanque.getBanque().getCompteClient(numCompteClient).getNip())){
-                        cnx.envoyer("CONNECT NO");
-                    }
-                    else {
-                        cnx.setNumeroCompteClient(numCompteClient);
-                        // ajouter compte cheque ici
-                        cnx.envoyer("CONNECT NO");
-                    }
-
-                    break;
 
                 /******************* COMMANDES DE GESTION DE COMPTES *******************/
                 case "NOUVEAU": //Crée un nouveau compte-client :
@@ -110,6 +84,33 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         else
                             cnx.envoyer("NOUVEAU NO "+t[0]+" existe");
                     }
+                    break;
+
+                case "CONNECT":
+
+                    argument = evenement.getArgument();
+                    t = argument.split(":");
+
+                    numCompteClient = t[0];
+                    nip = t[1];
+
+                    t = serveurBanque.list().split(":");
+
+                    for (String client: t) {
+                        if (Objects.equals(client, numCompteClient)) {
+                            cnx.envoyer("CONNECT NO");
+                        }
+                    }
+
+                    if (!Objects.equals(nip, serveurBanque.getBanque().getCompteClient(numCompteClient).getNip())){
+                        cnx.envoyer("CONNECT NO");
+                    }
+                    else {
+                        cnx.setNumeroCompteClient(numCompteClient);
+                        // ajouter compte cheque ici
+                        cnx.envoyer("CONNECT NO");
+                    }
+
                     break;
 
                 /********************** COMMANDES DE GESTION DU CAPITAL *******************/
