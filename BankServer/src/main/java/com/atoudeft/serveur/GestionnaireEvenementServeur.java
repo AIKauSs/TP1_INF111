@@ -80,6 +80,239 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                             cnx.envoyer("NOUVEAU NO "+t[0]+" existe");
                     }
                     break;
+
+                /********************** COMMANDES DE GESTION DU CAPITAL *******************/
+                case "DEPOT": // Permet au client de créditer son compte
+                    if (cnx.getNumeroCompteClient() == null) {
+                        cnx.envoyer("DEPOT NO compte non trouvé");
+                    } else {
+                        // Récupérer l'argument (ex : "200")
+                        argument = evenement.getArgument().trim();
+                        
+                        try {
+                            double montant = Double.parseDouble(argument);
+                            if (montant <= 0) {
+                                cnx.envoyer("DEPOT NO montant invalide");
+                            } else {
+                                Banque banque = cnx.getBanque();
+                                String numCompteClient = cnx.getNumeroCompteClient();
+                                String numCompteActuel = cnx.getNumeroCompteActuel();
+                                
+                                // Trouver le compte bancaire du client
+                                CompteBancaire compte = banque.getCompteClient(numCompteClient).getCompteBancaire(numCompteActuel);
+                                
+                                if (compte == null) {
+                                    cnx.envoyer("DEPOT NO compte introuvable");
+                                } else {
+                                    // Essayer d'effectuer le dépôt
+                                    boolean success = compte.crediter(montant);
+                                    if (success) {
+                                        cnx.envoyer("DEPOT OK " + montant + "$ déposés sur le compte " + numCompteActuel);
+                                    } else {
+                                        cnx.envoyer("DEPOT NO erreur lors du dépôt");
+                                    }
+                                }
+                            }
+                        } catch (NumberFormatException e) {
+                            cnx.envoyer("DEPOT NO Montant invalide");
+                        }
+                    }
+                    break;
+
+                    case "RETRAIT": // Permet au client de retirer de l'argent d'un de ses comptes
+                        if (cnx.getNumeroCompteClient() == null) {
+                            cnx.envoyer("RETRAIT NO compte non trouvé");
+                        } else {
+                            // Récupérer l'argument (ex : "200")
+                            argument = evenement.getArgument().trim();
+                            
+                            try {
+                                double montant = Double.parseDouble(argument);
+
+                                if (montant <= 0) {
+                                    cnx.envoyer("RETRAIT NO montant invalide");
+                                } else {
+                                    Banque banque = cnx.getBanque();
+                                    String numCompteClient = cnx.getNumeroCompteClient();
+                                    String numCompteActuel = cnx.getNumeroCompteActuel();
+
+                                    // Récupérer le compte bancaire actuel
+                                    CompteBancaire compte = banque.getCompteClient(numCompteClient).getCompteBancaire(numCompteActuel);
+
+                                    if (compte != null) {
+                                        double solde = compte.getSolde();
+                                        double frais = 0;
+
+                                        // Appliquer des frais pour les comptes épargne
+                                        if (compte.getType() == TypeCompte.EPARGNE) {
+                                            frais = 2.0;  // Exemple de frais pour un compte épargne
+                                        }
+
+                                        // Vérifier si le solde est suffisant pour couvrir le retrait et les frais
+                                        if (montant + frais <= solde) {
+                                            // Débiter le montant et les frais
+                                            boolean success = compte.debiter(montant + frais);
+                                            if (success) {
+                                                String message = "RETRAIT OK " + montant + "$ retirés du compte " + compte.getNumero();
+                                                if (frais > 0) {
+                                                    message += " avec des frais de " + frais;
+                                                }
+                                                cnx.envoyer(message);
+                                            } else {
+                                                cnx.envoyer("RETRAIT NO erreur lors du retrait");
+                                            }
+                                        } else {
+                                            cnx.envoyer("RETRAIT NO Solde insuffisant pour effectuer ce retrait");
+                                        }
+                                    } else {
+                                        cnx.envoyer("RETRAIT NO Compte spécifié introuvable");
+                                    }
+                                }
+                            } catch (NumberFormatException e) {
+                                cnx.envoyer("RETRAIT NO Montant invalide");
+                            }
+                        }
+                        break;
+
+    
+    
+                    case "TRANSFER": // Permet de transférer de l'argent d'un compte à un autre
+                        if (cnx.getNumeroCompteClient() == null) {
+                            cnx.envoyer("TRANSFER NO compte origine non trouvé");
+                        } else {
+                            // Découper les arguments (par exemple : "1000 numCompteDest")
+                            argument = evenement.getArgument().trim();
+                            String[] args = argument.split(" ");
+
+                            if (args.length != 2) {
+                                cnx.envoyer("TRANSFER NO Arguments invalides");
+                            } else {
+                                try {
+                                    double montant = Double.parseDouble(args[0]);
+                                    String numCompteDest = args[1];
+
+                                    if (montant <= 0) {
+                                        cnx.envoyer("TRANSFER NO montant invalide");
+                                    } else {
+                                        double frais = 0;
+                                        Banque banque = cnx.getBanque();
+                                        String numCompteClient = cnx.getNumeroCompteClient();
+                                        String numCompteActuel = cnx.getNumeroCompteActuel();
+
+                                        // Vérifier le compte source
+                                        CompteBancaire compteSource = banque.getCompteClient(numCompteClient).getCompteBancaire(numCompteActuel);
+                                        if (compteSource == null) {
+                                            cnx.envoyer("TRANSFER NO compte source introuvable");
+                                            break;
+                                        }
+
+                                        // Appliquer des frais pour les comptes épargne
+                                        if (compteSource.getType() == TypeCompte.EPARGNE) {
+                                            frais = 2.5; // Exemple de frais pour un compte épargne
+                                        }
+
+                                        // Vérifier si le solde est suffisant pour couvrir le transfert et les frais
+                                        if (compteSource.getSolde() < (montant + frais)) {
+                                            cnx.envoyer("TRANSFER NO Solde insuffisant");
+                                            break;
+                                        }
+
+                                        // Vérifier si le compte destinataire existe
+                                        CompteBancaire compteDest = banque.getCompteClient(numCompteDest).getCompteBancaire(numCompteActuel);
+                                        if (compteDest == null) {
+                                            cnx.envoyer("TRANSFER NO compte destinataire introuvable");
+                                            break;
+                                        }
+
+                                        // Essayer d'effectuer le transfert
+                                        boolean success = banque.transferer(montant, compteSource, compteDest);
+                                        if (success) {
+                                            // Débiter les frais du compte source, si applicable
+                                            compteSource.debiter(frais);
+                                            cnx.envoyer("TRANSFER OK " + montant + "$ transférés au compte " + numCompteDest);
+                                        } else {
+                                            cnx.envoyer("TRANSFER NO erreur lors du transfert");
+                                        }
+                                    }
+                                } catch (NumberFormatException e) {
+                                    cnx.envoyer("TRANSFER NO Montant invalide");
+                                }
+                            }
+                        }
+                        break;
+
+
+                case "FACTURE": // Payer une facture
+                    // Vérifier la connexion du client
+                    if (cnx.getNumeroCompteClient() == null) {
+                        cnx.envoyer("FACTURE NO client non trouvé");
+                    } else {
+                        // Vérifier la validité des arguments
+                        argument = evenement.getArgument().trim();
+                        String[] args = argument.split(" ", 3); // Diviser l'argument en 3 parties
+                        if (args.length != 3) {
+                            cnx.envoyer("FACTURE NO arguments invalides");
+                            break;
+                        } else {
+                            try {
+                                // Récupérer les informations de la facture
+                                double montant = Double.parseDouble(args[0]);
+                                String numFacture = args[1];
+                                String description = args[2];
+
+                                // Vérifier que le montant est valide
+                                if (montant <= 0) {
+                                    cnx.envoyer("FACTURE NO montant invalide");
+                                    break;
+                                }
+
+                                // Récupérer le compte du client
+                                String numCompteClient = cnx.getNumeroCompteClient();
+                                Banque banque = cnx.getBanque();  // On suppose que la banque est accessible via la connexion
+                                CompteClient client = banque.getCompteClient(numCompteClient);
+                                if (client == null) {
+                                    cnx.envoyer("FACTURE NO compte client introuvable");
+                                    break;
+                                }
+
+                                // Récupérer le compte bancaire actuel du client
+                                String numCompteActuel = cnx.getNumeroCompteActuel(); // Le numéro de compte actuellement sélectionné
+                                CompteBancaire compte = client.getCompteBancaire(numCompteActuel);
+                                if (compte == null) {
+                                    cnx.envoyer("FACTURE NO compte bancaire introuvable");
+                                    break;
+                                }
+
+                                // Vérifier le type de compte (ajouter des frais pour un compte épargne)
+                                double frais = 0;
+                                if (compte.getType() == TypeCompte.EPARGNE) {
+                                    frais = 2.5;  // Exemple de frais pour un compte épargne
+                                    montant += frais;  // Ajouter les frais au montant de la facture
+                                }
+
+                                // Vérifier si le solde est suffisant pour payer la facture
+                                if (montant > compte.getSolde()) {
+                                    cnx.envoyer("FACTURE NO solde insuffisant");
+                                    break;
+                                }
+
+                                // Si le solde est suffisant, procéder au paiement de la facture
+                                boolean success = compte.payerFacture(numFacture, montant, description);
+                                if (success) {
+                                    // Envoyer la confirmation du paiement
+                                    cnx.envoyer("FACTURE OK " + montant + " " + numFacture + " " + description);
+                                } else {
+                                    // En cas d'échec du paiement
+                                    cnx.envoyer("FACTURE NO erreur lors de la facturation");
+                                }
+                            } catch (NumberFormatException e) {
+                                // Si le montant ne peut pas être converti en un nombre valide
+                                cnx.envoyer("FACTURE NO Montant invalide");
+                            }
+                        }
+                    }
+                    break;
+
                 /******************* TRAITEMENT PAR DÉFAUT *******************/
                 default: //Renvoyer le texte recu convertit en majuscules :
                     msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();
