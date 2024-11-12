@@ -35,4 +35,19 @@ public class CompteClient implements Serializable {
         return nip;
     }
 
+    /**
+     * Récupère un compte bancaire en fonction de son numéro.
+     *
+     * @param numCompteActuel le numéro du compte bancaire recherché
+     * @return le compte bancaire correspondant au numéro, ou null si aucun compte n'est trouvé
+     */
+    public CompteBancaire getCompteBancaire(String numCompteActuel) {
+        for (CompteBancaire compte : comptes) {
+            if (compte.getNumero().equals(numCompteActuel)) {
+                return compte;
+            }
+        }
+        return null;
+    }
+
 }
