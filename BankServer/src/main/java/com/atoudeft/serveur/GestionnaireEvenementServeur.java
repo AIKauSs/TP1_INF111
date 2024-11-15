@@ -62,7 +62,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     cnx.envoyer("LIST " + serveurBanque.list());
                     break;
 
-                /******************* COMMANDES DE GESTION DE COMPTES *******************/
+                /******************* COMMA NDES DE GESTION DE COMPTES *******************/
                 case "NOUVEAU": //Crée un nouveau compte-client :
                     if (cnx.getNumeroCompteClient()!=null) {
                         cnx.envoyer("NOUVEAU NO deja connecte");
@@ -86,6 +86,21 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                             cnx.envoyer("NOUVEAU NO "+t[0]+" existe");
                     }
                     break;
+
+
+
+
+
+
+
+
+
+
+
+                // case "EPARGNE" : // Crée un nouveau compte-épargne:
+                    // if()
+
+               // }
 
                 case "CONNECT":
 
