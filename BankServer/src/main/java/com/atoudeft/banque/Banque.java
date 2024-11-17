@@ -120,4 +120,16 @@ public class Banque implements Serializable {
         }
         return null;
     }
+    public String getNumeroCompteEpargne(String numCompteClient) {
+        for (CompteClient compteClient : comptes) {
+            if(numCompteClient.equals(compteClient.getNumeroClient())) {
+                for(CompteBancaire compteBancaire : compteClient.getComptes()) {
+                    if(compteBancaire instanceof CompteEpargne) {
+                        return compteBancaire.getNumero();
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

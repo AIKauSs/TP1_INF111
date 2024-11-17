@@ -103,7 +103,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                // }
 
                 case "CONNECT":
-
+                    banque = serveurBanque.getBanque();
                     argument = evenement.getArgument();
                     t = argument.split(":");
 
@@ -118,16 +118,45 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         }
                     }
 
-                    if (!Objects.equals(nip, serveurBanque.getBanque().getCompteClient(numCompteClient).getNip())){
+                    if (!Objects.equals(nip, banque.getCompteClient(numCompteClient).getNip())){
                         cnx.envoyer("CONNECT NO");
                     }
                     else {
                         cnx.setNumeroCompteClient(numCompteClient);
-                        // ajouter compte cheque ici
-                        cnx.envoyer("CONNECT NO");
+                        cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(numCompteClient));
+
+                        cnx.envoyer("CONNECT OK");
                     }
 
                     break;
+
+                case "SELECT":
+                    banque = serveurBanque.getBanque();
+                    argument = evenement.getArgument().toUpperCase();
+
+
+                    if (banque.appartientA(cnx.getNumeroCompteActuel(), cnx.getNumeroCompteClient())) {
+
+                        switch (argument) {
+
+                            case "CHEQUE":
+                                cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(cnx.getNumeroCompteClient()));
+                                break;
+
+                            case "EPARGNE":
+                                cnx.setNumeroCompteActuel(banque.getNumeroCompteEpargne(cnx.getNumeroCompteClient()));
+                                break;
+
+                            default:
+                                msg = (evenement.getType() + " " + evenement.getArgument()).toUpperCase();
+                                cnx.envoyer(msg);
+                        }
+                        cnx.envoyer("SELECT OK");
+
+                    }
+                    else {
+                        cnx.envoyer("SELECT NO");
+                    }
 
                 /********************** COMMANDES DE GESTION DU CAPITAL *******************/
                 case "DEPOT": // Dépôt d'argent
