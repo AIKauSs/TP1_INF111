@@ -31,6 +31,7 @@ public class CompteClient implements Serializable {
         return this.comptes.add(compte);
     }
 
+    public String getNip() {return nip;}
     public String getNumeroClient(){return numero;}
     public List<CompteBancaire> getComptes() {
         return comptes;

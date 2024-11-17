@@ -96,7 +96,7 @@ public class Banque implements Serializable {
     public boolean ajouter(String numCompteClient, String nip) {
         if (numCompteClient.length() < 6 || numCompteClient.length() > 8
                 || !numCompteClient.matches("[A-Z0-9]+") ||
-                nip.length() < 4 && nip.length() > 5 || !nip.matches("[0-9]+" )) {
+                (nip.length() < 4 || nip.length() > 5) || !nip.matches("[0-9]+" )) {
             return false;
         }
         return this.comptes.add(new CompteClient(numCompteClient,nip)); //À modifier
@@ -120,6 +120,12 @@ public class Banque implements Serializable {
         }
         return null;
     }
+
+    /**
+     * Retourne le numéro du compte épargne d'un client à partir de son numéro de compte-client.
+     * @param numCompteClient numéro de compte-client
+     * @return numéro du compte épargne du client ayant le numéro de compte-client
+     */
     public String getNumeroCompteEpargne(String numCompteClient) {
         for (CompteClient compteClient : comptes) {
             if(numCompteClient.equals(compteClient.getNumeroClient())) {
