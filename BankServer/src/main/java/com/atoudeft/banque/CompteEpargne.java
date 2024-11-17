@@ -12,6 +12,7 @@ public class CompteEpargne extends CompteBancaire {
      */
     public CompteEpargne(String numeroCompte, TypeCompte type, double solde) {
         super(numeroCompte, TypeCompte.EPARGNE);
+        this.solde = solde;
 
     }
 
