@@ -8,9 +8,10 @@ public class CompteCheque extends CompteBancaire{
 
     }
 
-
     public boolean crediter(double montant) {
         if (montant > 0) {
+            OperationDepot operation = new OperationDepot(montant);
+            enregistrerOperation(operation);
             solde += montant;
             return true;
         }
@@ -19,6 +20,8 @@ public class CompteCheque extends CompteBancaire{
 
     public boolean debiter(double montant) {
         if (montant < 0) {
+            OperationRetrait operation = new OperationRetrait(montant);
+            enregistrerOperation(operation);
             solde -= montant;
             return true;
         }
@@ -26,10 +29,14 @@ public class CompteCheque extends CompteBancaire{
     }
 
     public boolean payerFacture(String numeroFacture, double montant, String description) {
+        OperationFacture operation = new OperationFacture(montant, numeroFacture, description);
+        enregistrerOperation(operation);
         return false;
     }
 
     public boolean transferer(double montant, String numeroCompteDestinataire) {
+        OperationTransfert operation = new OperationTransfert(montant,numeroCompteDestinataire);
+        enregistrerOperation(operation);
         return false;
     }
 }
