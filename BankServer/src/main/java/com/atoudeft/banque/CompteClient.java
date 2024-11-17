@@ -33,9 +33,11 @@ public class CompteClient implements Serializable {
 
     public String getNip() {return nip;}
     public String getNumeroClient(){return numero;}
+
     public List<CompteBancaire> getComptes() {
         return comptes;
     }
+
 
     /**
      * Récupère un compte bancaire en fonction de son numéro.
@@ -51,5 +53,6 @@ public class CompteClient implements Serializable {
         }
         return null;
     }
+
 
 }
