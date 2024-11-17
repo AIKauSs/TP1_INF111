@@ -10,6 +10,10 @@ public class Banque implements Serializable {
     private String nom;
     private List<CompteClient> comptes;
 
+    /**
+     * Constructeur par parametres
+     * @param nom
+     */
     public Banque(String nom) {
         this.nom = nom;
         this.comptes = new ArrayList<>();
@@ -98,6 +102,17 @@ public class Banque implements Serializable {
                 || !numCompteClient.matches("[A-Z0-9]+") ||
                 nip.length() < 4 && nip.length() > 5 || !nip.matches("[0-9]+" )) {
             return false;
+        }
+        for(CompteClient compte : comptes) {
+            if(!compte.getNumeroClient().equals(numCompteClient)) {
+                CompteClient nouveauCompteClient = new CompteClient(numCompteClient, nip);
+                comptes.add(nouveauCompteClient);
+                CompteBancaire.genereNouveauNumero();
+                CompteCheque compteCheque = new CompteCheque(CompteBancaire.genereNouveauNumero(), TypeCompte.CHEQUE, 0);
+                nouveauCompteClient.ajouter(compteCheque);
+                comptes.add(nouveauCompteClient);
+                return true;
+            }
         }
         return this.comptes.add(new CompteClient(numCompteClient,nip)); //À modifier
     }

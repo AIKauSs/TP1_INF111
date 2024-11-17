@@ -8,6 +8,12 @@ public class CompteCheque extends CompteBancaire{
 
     }
 
+    /**
+     * ajoute le montant au solde s’il est strictement positif. Sinon,
+     * retourne false
+     * @param montant
+     * @return
+     */
     public boolean crediter(double montant) {
         if (montant > 0) {
             OperationDepot operation = new OperationDepot(montant);
@@ -18,6 +24,12 @@ public class CompteCheque extends CompteBancaire{
         return false;
     }
 
+    /**
+     * retire le montant du solde s’il est strictement positif et qu’il y a
+     * assez de fonds. Sinon, retourne false
+     * @param montant
+     * @return
+     */
     public boolean debiter(double montant) {
         if (montant < 0) {
             OperationRetrait operation = new OperationRetrait(montant);
