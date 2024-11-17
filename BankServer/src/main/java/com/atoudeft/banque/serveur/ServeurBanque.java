@@ -15,7 +15,7 @@ import java.util.ListIterator;
  * @since 2024-08-20
  */
 public class ServeurBanque extends Serveur {
-    public static final int DELAI_INACTIVITE = 5000;
+    public static final int DELAI_INACTIVITE = 30000;
     //Référence vers la banque gérée par ce serveur :
     private Banque banque;
     //Thread qui supprime les connexions inactives :
@@ -85,13 +85,12 @@ public class ServeurBanque extends Serveur {
      */
     public void supprimeInactifs() {
 
-        for (Connexion cnx:connectes) {
-          if (((ConnexionBanque)cnx).estInactifDepuis(DELAI_INACTIVITE)){
-              cnx.envoyer("END");
-              cnx.close();
-              connectes.remove(cnx);
-          }
-        }
-
+       for (Connexion cnx:connectes) {
+           if (((ConnexionBanque)cnx).estInactifDepuis(DELAI_INACTIVITE)) {
+               cnx.envoyer("END");
+               cnx.close();
+               connectes.remove(cnx);
+           }
+       }
     }
 }

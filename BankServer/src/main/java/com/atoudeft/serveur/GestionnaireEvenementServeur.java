@@ -113,19 +113,17 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     t = serveurBanque.list().split(":");
 
                     for (String client: t) {
+
                         if (Objects.equals(client, numCompteClient)) {
                             cnx.envoyer("CONNECT NO");
                         }
-                    }
 
-                    if (!Objects.equals(nip, banque.getCompteClient(numCompteClient).getNip())){
-                        cnx.envoyer("CONNECT NO");
-                    }
-                    else {
-                        cnx.setNumeroCompteClient(numCompteClient);
-                        cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(numCompteClient));
+                        else {
+                            cnx.setNumeroCompteClient(numCompteClient);
+                            cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(numCompteClient));
+                            cnx.envoyer("CONNECT OK");
+                        }
 
-                        cnx.envoyer("CONNECT OK");
                     }
 
                     break;
@@ -134,8 +132,8 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     banque = serveurBanque.getBanque();
                     argument = evenement.getArgument().toUpperCase();
 
-
-                    if (banque.appartientA(cnx.getNumeroCompteActuel(), cnx.getNumeroCompteClient())) {
+//temporaire 1==1
+                    if (1==1) {
 
                         switch (argument) {
 
