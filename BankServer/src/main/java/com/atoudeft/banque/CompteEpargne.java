@@ -10,12 +10,9 @@ public class CompteEpargne extends CompteBancaire {
     /**
      * Constructeur
      */
-    public CompteEpargne(String numeroCompte, TypeCompte type, double solde, int limite, int frais,
-                         double tauxInterets) {
+    public CompteEpargne(String numeroCompte, TypeCompte type, double solde) {
         super(numeroCompte, TypeCompte.EPARGNE);
-        this.limite = limite;
-        this.frais = frais;
-        this.tauxInterets = tauxInterets;
+
     }
 
     public double ajouterInterets() {
