@@ -1,9 +1,6 @@
 package com.atoudeft.serveur;
 
-import com.atoudeft.banque.Banque;
-import com.atoudeft.banque.CompteBancaire;
-import com.atoudeft.banque.CompteClient;
-import com.atoudeft.banque.TypeCompte;
+import com.atoudeft.banque.*;
 import com.atoudeft.banque.serveur.ConnexionBanque;
 import com.atoudeft.banque.serveur.ServeurBanque;
 import com.atoudeft.commun.evenement.Evenement;
@@ -259,11 +256,14 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                                 }
 
                                 // Essayer d'effectuer le transfert
-                                boolean success = banque.transferer(montant, numCompteActuel, numCompteDest);
+                                boolean success = compteSource.transferer(montant, numCompteDest);
                                 if (success) {
-                                    // Débiter les frais du compte source, si applicable
-                                    compteSource.debiter(frais);
                                     cnx.envoyer("TRANSFER OK " + montant + "$ transférés au compte " + numCompteDest);
+                                    // Débiter les frais du compte source, si il yen a
+                                    if(frais != 0){
+                                        compteSource.debiter(frais);
+                                        cnx.envoyer("FRAIS COMPTE EPARGNE " + frais);
+                                    }
                                 } else {
                                     cnx.envoyer("TRANSFER NO erreur lors du transfert");
                                 }
@@ -276,8 +276,12 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
 
 
                 case "FACTURE": // Payer une facture
-                    banque = serveurBanque.getBanque();
                     numCompteClient = cnx.getNumeroCompteClient();
+                    banque = serveurBanque.getBanque();
+                    if (numCompteClient == null) {
+                        cnx.envoyer("RETRAIT NO client non connecté");
+                        break;
+                    }
                     // Vérifier la validité des arguments
                     argument = evenement.getArgument().trim();
                     String[] argsF = argument.split(" ", 3); // Diviser l'argument en 3 parties
@@ -339,6 +343,34 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                         }
                     }
                     break;
+
+                case "HIST":
+                    numCompteClient = cnx.getNumeroCompteClient();
+                    banque = serveurBanque.getBanque();
+                    if (numCompteClient == null) {
+                        cnx.envoyer("RETRAIT NO client non connecté");
+                        break;
+                    }
+
+                    //verifier existance du client
+                    CompteClient client = banque.getCompteClient(numCompteClient);
+                    if (client == null) {
+                        cnx.envoyer("FACTURE NO compte client introuvable");
+                        break;
+                    }
+
+                    // Récupérer le compte bancaire actuel du client
+                    String numCompteActuel = cnx.getNumeroCompteActuel(); // Le numéro de compte actuellement sélectionné
+                    CompteBancaire compte = client.getCompteBancaire(numCompteActuel);
+                    //verifier sélection d'un compte valide
+                    if (compte == null) {
+                        cnx.envoyer("FACTURE NO compte bancaire introuvable");
+                        break;
+                    }
+                    PileChainee historique = compte.getHistorique();
+                    System.out.println(historique.toString());
+                    break;
+
 
     /******************* TRAITEMENT PAR DÉFAUT *******************/
                 default: //Renvoyer le texte recu convertit en majuscules :
