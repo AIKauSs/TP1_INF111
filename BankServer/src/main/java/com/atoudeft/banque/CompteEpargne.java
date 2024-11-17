@@ -26,6 +26,8 @@ public class CompteEpargne extends CompteBancaire {
 
     public boolean crediter(double montant) {
         if(solde > 0) {
+            OperationDepot operation = new OperationDepot(montant);
+            enregistrerOperation(operation);
             solde += montant;
         }
         return false;
@@ -33,6 +35,8 @@ public class CompteEpargne extends CompteBancaire {
 
     public boolean debiter(double montant) {
         if (solde > 0 && solde-montant > 0) {
+            OperationRetrait operation = new OperationRetrait(montant);
+            enregistrerOperation(operation);
             solde -= montant;
             if(solde < limite) {
                 solde = solde - frais;
@@ -43,11 +47,15 @@ public class CompteEpargne extends CompteBancaire {
     }
 
     public boolean payerFacture(String numeroFacture, double montant, String description) {
+        OperationFacture operation = new OperationFacture(montant, numeroFacture, description);
+        enregistrerOperation(operation);
         return false;
     }
 
 
     public boolean transferer(double montant, String numeroCompteDestinataire) {
+        OperationTransfert operation = new OperationTransfert(montant,numeroCompteDestinataire);
+        enregistrerOperation(operation);
         return false;
     }
 }
