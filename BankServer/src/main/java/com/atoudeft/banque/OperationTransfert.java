@@ -2,9 +2,8 @@ package com.atoudeft.banque;
 
 /**
  * Classe operation de type TRANSFERT
- *
  */
-public class OperationTransfert extends Operation{
+public class OperationTransfert extends Operation {
     private double montant;
     private String numCompteDest;
 
@@ -13,7 +12,7 @@ public class OperationTransfert extends Operation{
      * Crée une opération avec le type et la date
      * actuelle en millisecondes
      *
-     * @param montant montant de la facture
+     * @param montant       montant de la facture
      * @param numCompteDest numéro de compte Destinataire
      */
     public OperationTransfert(double montant, String numCompteDest) {
@@ -27,7 +26,7 @@ public class OperationTransfert extends Operation{
      * on affiche le montant et le numero de compte Destinataire
      */
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString() + " " + montant + " " + numCompteDest;
     }
 }

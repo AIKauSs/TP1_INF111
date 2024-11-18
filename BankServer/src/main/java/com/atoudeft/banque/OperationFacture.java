@@ -4,7 +4,7 @@ package com.atoudeft.banque;
  * Classe opération de type FACTURE
  * cette classe hérite de la classe Operation
  */
-public class OperationFacture extends  Operation{
+public class OperationFacture extends Operation {
     private double montant;
     private String numFacture;
     private String description;
@@ -14,8 +14,8 @@ public class OperationFacture extends  Operation{
      * Crée une opération avec le type et la date
      * actuelle en millisecondes
      *
-     * @param montant montant de la facture
-     * @param numFacture numéro de la facture
+     * @param montant     montant de la facture
+     * @param numFacture  numéro de la facture
      * @param description description de la facture
      */
     public OperationFacture(double montant, String numFacture, String description) {
@@ -30,7 +30,7 @@ public class OperationFacture extends  Operation{
      * Ici on affiche le montant, numero de facture et description
      */
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString() + " " + montant + " " + numFacture + " " + description;
     }
 }

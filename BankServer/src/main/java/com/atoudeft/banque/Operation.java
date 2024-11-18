@@ -14,18 +14,20 @@ public abstract class Operation implements Serializable {
     /**
      * Crée une opération avec le type et un objet Date
      * La date est en millisecondes
-     * @param type le type d'opération effectuée
      *
+     * @param type le type d'opération effectuée
      */
-    public Operation(TypeOperation type){
+    public Operation(TypeOperation type) {
         this.type = type;
         this.date = new Date(System.currentTimeMillis());
     }
+
     // accesseurs
-    public TypeOperation getType(){
+    public TypeOperation getType() {
         return type;
     }
-    public Date getDate(){
+
+    public Date getDate() {
         return date;
     }
 
@@ -33,8 +35,8 @@ public abstract class Operation implements Serializable {
      * méthode pour afficher la date et le type de l'operation
      */
     @Override
-    public String toString(){
-       return date + " " + type;
+    public String toString() {
+        return date + " " + type;
     }
 
 }

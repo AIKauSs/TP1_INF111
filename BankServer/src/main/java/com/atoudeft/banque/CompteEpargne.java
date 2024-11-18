@@ -18,6 +18,7 @@ public class CompteEpargne extends CompteBancaire {
 
     /**
      * calcule les intérêts et les ajoute au solde
+     *
      * @return
      */
     public double ajouterInterets() {
@@ -28,11 +29,12 @@ public class CompteEpargne extends CompteBancaire {
     /**
      * ajoute le montant au solde s’il est strictement positif. Sinon,
      * retourne false
+     *
      * @param montant
      * @return
      */
     public boolean crediter(double montant) {
-        if(solde > 0) {
+        if (solde > 0) {
             OperationDepot operation = new OperationDepot(montant);
             enregistrerOperation(operation);
             solde += montant;
@@ -44,15 +46,16 @@ public class CompteEpargne extends CompteBancaire {
      * : retire le montant du solde s’il est strictement positif et qu’il y a
      * assez de fonds. Sinon, retourne false. Si l’opération a réussi et qu’il y a moins
      * de 1000$ dans le compte avant l’opération, on prélève des frais de 2$
+     *
      * @param montant
      * @return
      */
     public boolean debiter(double montant) {
-        if (solde > 0 && solde-montant > 0) {
+        if (solde > 0 && solde - montant > 0) {
             OperationRetrait operation = new OperationRetrait(montant);
             enregistrerOperation(operation);
             solde -= montant;
-            if(solde < limite) {
+            if (solde < limite) {
                 solde = solde - frais;
             }
 
@@ -68,7 +71,7 @@ public class CompteEpargne extends CompteBancaire {
 
 
     public boolean transferer(double montant, String numeroCompteDestinataire) {
-        OperationTransfert operation = new OperationTransfert(montant,numeroCompteDestinataire);
+        OperationTransfert operation = new OperationTransfert(montant, numeroCompteDestinataire);
         enregistrerOperation(operation);
         return false;
     }

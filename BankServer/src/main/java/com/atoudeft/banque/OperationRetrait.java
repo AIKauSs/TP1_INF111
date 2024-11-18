@@ -4,8 +4,9 @@ package com.atoudeft.banque;
  * Classe d'opération de type RETRAIT
  * Cette classe hérite de la classe Operation
  */
-public class OperationRetrait extends Operation{
+public class OperationRetrait extends Operation {
     private double montant;
+
     /**
      * Crée une opération de type retrait avec le type et la date
      * actuelle en millisecondes
@@ -17,12 +18,12 @@ public class OperationRetrait extends Operation{
         this.montant = montant;
     }
 
-    public double getMontant(){
+    public double getMontant() {
         return montant;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString() + "Montant :" + montant;
     }
 }

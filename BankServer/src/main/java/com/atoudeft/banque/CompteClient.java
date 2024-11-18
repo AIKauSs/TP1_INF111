@@ -13,7 +13,7 @@ public class CompteClient implements Serializable {
      * Crée un compte-client avec un numéro et un nip.
      *
      * @param numero le numéro du compte-client
-     * @param nip le nip
+     * @param nip    le nip
      */
     public CompteClient(String numero, String nip) {
         this.numero = numero;
@@ -31,8 +31,13 @@ public class CompteClient implements Serializable {
         return this.comptes.add(compte);
     }
 
-    public String getNip() {return nip;}
-    public String getNumeroClient(){return numero;}
+    public String getNip() {
+        return nip;
+    }
+
+    public String getNumeroClient() {
+        return numero;
+    }
 
     public List<CompteBancaire> getComptes() {
         return comptes;

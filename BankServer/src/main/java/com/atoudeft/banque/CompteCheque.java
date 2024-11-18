@@ -1,9 +1,10 @@
 package com.atoudeft.banque;
 
-public class CompteCheque extends CompteBancaire{
+public class CompteCheque extends CompteBancaire {
 
     double solde = 0;
-    public CompteCheque (String numeroCompte, TypeCompte type, double solde) {
+
+    public CompteCheque(String numeroCompte, TypeCompte type, double solde) {
         super(numeroCompte, TypeCompte.CHEQUE);
 
     }
@@ -11,6 +12,7 @@ public class CompteCheque extends CompteBancaire{
     /**
      * ajoute le montant au solde s’il est strictement positif. Sinon,
      * retourne false
+     *
      * @param montant
      * @return
      */
@@ -27,6 +29,7 @@ public class CompteCheque extends CompteBancaire{
     /**
      * retire le montant du solde s’il est strictement positif et qu’il y a
      * assez de fonds. Sinon, retourne false
+     *
      * @param montant
      * @return
      */
@@ -47,7 +50,7 @@ public class CompteCheque extends CompteBancaire{
     }
 
     public boolean transferer(double montant, String numeroCompteDestinataire) {
-        OperationTransfert operation = new OperationTransfert(montant,numeroCompteDestinataire);
+        OperationTransfert operation = new OperationTransfert(montant, numeroCompteDestinataire);
         enregistrerOperation(operation);
         return false;
     }

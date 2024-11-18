@@ -16,6 +16,7 @@ public class PileChainee implements Serializable {
             this.suivant = null;
         }
     }
+
     //initialisation des paramètres
     private Noeud sommet = null;
     private int taille = 0;

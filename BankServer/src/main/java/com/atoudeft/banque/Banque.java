@@ -116,21 +116,21 @@ public class Banque implements Serializable {
 
         }
 
-            CompteClient nouveauCompteClient = new CompteClient(numCompteClient, nip);
-            String numeroCompteBanquaire;
+        CompteClient nouveauCompteClient = new CompteClient(numCompteClient, nip);
+        String numeroCompteBanquaire;
 
-            do {
-                numeroCompteBanquaire = CompteBancaire.genereNouveauNumero();
-            }
-            while (getNumeroCompteParDefaut(numeroCompteBanquaire) != null);
+        do {
+            numeroCompteBanquaire = CompteBancaire.genereNouveauNumero();
+        }
+        while (getNumeroCompteParDefaut(numeroCompteBanquaire) != null);
 
-            CompteCheque compteCheque = new CompteCheque(numeroCompteBanquaire, TypeCompte.CHEQUE, 0);
+        CompteCheque compteCheque = new CompteCheque(numeroCompteBanquaire, TypeCompte.CHEQUE, 0);
 
-            nouveauCompteClient.ajouter(compteCheque);
+        nouveauCompteClient.ajouter(compteCheque);
 
-            comptes.add(nouveauCompteClient);
+        comptes.add(nouveauCompteClient);
 
-            return true;
+        return true;
 
     }
 
@@ -142,9 +142,9 @@ public class Banque implements Serializable {
      */
     public String getNumeroCompteParDefaut(String numCompteClient) {
         for (CompteClient compteClient : comptes) {
-            if(numCompteClient.equals(compteClient.getNumeroClient())) {
-                for(CompteBancaire compteBancaire : compteClient.getComptes()) {
-                    if(compteBancaire instanceof CompteCheque) {
+            if (numCompteClient.equals(compteClient.getNumeroClient())) {
+                for (CompteBancaire compteBancaire : compteClient.getComptes()) {
+                    if (compteBancaire instanceof CompteCheque) {
                         return compteBancaire.getNumero();
                     }
                 }
@@ -155,14 +155,15 @@ public class Banque implements Serializable {
 
     /**
      * Retourne le numéro du compte épargne d'un client à partir de son numéro de compte-client.
+     *
      * @param numCompteClient numéro de compte-client
      * @return numéro du compte épargne du client ayant le numéro de compte-client
      */
     public String getNumeroCompteEpargne(String numCompteClient) {
         for (CompteClient compteClient : comptes) {
-            if(numCompteClient.equals(compteClient.getNumeroClient())) {
-                for(CompteBancaire compteBancaire : compteClient.getComptes()) {
-                    if(compteBancaire instanceof CompteEpargne) {
+            if (numCompteClient.equals(compteClient.getNumeroClient())) {
+                for (CompteBancaire compteBancaire : compteClient.getComptes()) {
+                    if (compteBancaire instanceof CompteEpargne) {
                         return compteBancaire.getNumero();
                     }
                 }

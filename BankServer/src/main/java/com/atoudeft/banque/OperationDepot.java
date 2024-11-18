@@ -5,7 +5,7 @@ package com.atoudeft.banque;
  * Elle définit une opération de dépot
  */
 
-public class OperationDepot extends Operation{
+public class OperationDepot extends Operation {
     private double montant;
 
     /**
@@ -18,8 +18,9 @@ public class OperationDepot extends Operation{
         super(TypeOperation.DEPOT);
         this.montant = montant;
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString() + "Montant : " + montant;
     }
 }
