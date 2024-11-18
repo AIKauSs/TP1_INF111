@@ -398,14 +398,14 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     numCompteClient = cnx.getNumeroCompteClient();
                     banque = serveurBanque.getBanque();
                     if (numCompteClient == null) {
-                        cnx.envoyer("RETRAIT NO client non connecté");
+                        cnx.envoyer("HIST NO client non connecté");
                         break;
                     }
 
                     //verifier existance du client
                     CompteClient client = banque.getCompteClient(numCompteClient);
                     if (client == null) {
-                        cnx.envoyer("FACTURE NO compte client introuvable");
+                        cnx.envoyer("HIST NO compte client introuvable");
                         break;
                     }
 
@@ -414,7 +414,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     CompteBancaire compte = client.getCompteBancaire(numCompteActuel);
                     //verifier sélection d'un compte valide
                     if (compte == null) {
-                        cnx.envoyer("FACTURE NO compte bancaire introuvable");
+                        cnx.envoyer("HIST NO compte bancaire introuvable");
                         break;
                     }
                     PileChainee historique = compte.getHistorique();
