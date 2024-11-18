@@ -53,6 +53,4 @@ public class CompteClient implements Serializable {
         }
         return null;
     }
-
-
 }

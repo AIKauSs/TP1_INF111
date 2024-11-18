@@ -12,6 +12,7 @@ public class Banque implements Serializable {
 
     /**
      * Constructeur par parametres
+     *
      * @param nom
      */
     public Banque(String nom) {
@@ -26,20 +27,20 @@ public class Banque implements Serializable {
      * @return le compte-client s'il a été trouvé. Sinon, retourne null
      */
     public CompteClient getCompteClient(String numeroCompteClient) {
-        CompteClient cpt = new CompteClient(numeroCompteClient,"");
-        int index = this.comptes.indexOf(cpt);
-        if (index != -1)
-            return this.comptes.get(index);
-        else
-            return null;
+        for (CompteClient compteClient : this.comptes) {
+            if (compteClient.getNumeroClient().equals(numeroCompteClient)) {
+                return compteClient;
+            }
+        }
+        return null;
     }
 
     /**
      * Vérifier qu'un compte-bancaire appartient bien au compte-client.
      *
      * @param numeroCompteBancaire numéro du compte-bancaire
-     * @param numeroCompteClient    numéro du compte-client
-     * @return  true si le compte-bancaire appartient au compte-client
+     * @param numeroCompteClient   numéro du compte-client
+     * @return true si le compte-bancaire appartient au compte-client
      */
     public boolean appartientA(String numeroCompteBancaire, String numeroCompteClient) {
         throw new NotImplementedException();
@@ -48,7 +49,7 @@ public class Banque implements Serializable {
     /**
      * Effectue un dépot d'argent dans un compte-bancaire
      *
-     * @param montant montant à déposer
+     * @param montant      montant à déposer
      * @param numeroCompte numéro du compte
      * @return true si le dépot s'est effectué correctement
      */
@@ -59,7 +60,7 @@ public class Banque implements Serializable {
     /**
      * Effectue un retrait d'argent d'un compte-bancaire
      *
-     * @param montant montant retiré
+     * @param montant      montant retiré
      * @param numeroCompte numéro du compte
      * @return true si le retrait s'est effectué correctement
      */
@@ -69,9 +70,10 @@ public class Banque implements Serializable {
 
     /**
      * Effectue un transfert d'argent d'un compte à un autre de la même banque
-     * @param montant montant à transférer
-     * @param numeroCompteInitial   numéro du compte d'où sera prélevé l'argent
-     * @param numeroCompteFinal numéro du compte où sera déposé l'argent
+     *
+     * @param montant             montant à transférer
+     * @param numeroCompteInitial numéro du compte d'où sera prélevé l'argent
+     * @param numeroCompteFinal   numéro du compte où sera déposé l'argent
      * @return true si l'opération s'est déroulée correctement
      */
     public boolean transferer(double montant, String numeroCompteInitial, String numeroCompteFinal) {
@@ -80,10 +82,11 @@ public class Banque implements Serializable {
 
     /**
      * Effectue un paiement de facture.
-     * @param montant montant de la facture
-     * @param numeroCompte numéro du compte bancaire d'où va se faire le paiement
+     *
+     * @param montant       montant de la facture
+     * @param numeroCompte  numéro du compte bancaire d'où va se faire le paiement
      * @param numeroFacture numéro de la facture
-     * @param description texte descriptif de la facture
+     * @param description   texte descriptif de la facture
      * @return true si le paiement s'est bien effectuée
      */
     public boolean payerFacture(double montant, String numeroCompte, String numeroFacture, String description) {
@@ -94,27 +97,40 @@ public class Banque implements Serializable {
      * Crée un nouveau compte-client avec un numéro et un nip et l'ajoute à la liste des comptes.
      *
      * @param numCompteClient numéro du compte-client à créer
-     * @param nip nip du compte-client à créer
+     * @param nip             nip du compte-client à créer
      * @return true si le compte a été créé correctement
      */
     public boolean ajouter(String numCompteClient, String nip) {
+
         if (numCompteClient.length() < 6 || numCompteClient.length() > 8
                 || !numCompteClient.matches("[A-Z0-9]+") ||
-                (nip.length() < 4 || nip.length() > 5) || !nip.matches("[0-9]+" )) {
+                (nip.length() < 4 || nip.length() > 5) || !nip.matches("[0-9]+")) {
             return false;
         }
-        for(CompteClient compte : comptes) {
-            if(!compte.getNumeroClient().equals(numCompteClient)) {
-                CompteClient nouveauCompteClient = new CompteClient(numCompteClient, nip);
-                comptes.add(nouveauCompteClient);
-                CompteBancaire.genereNouveauNumero();
-                CompteCheque compteCheque = new CompteCheque(CompteBancaire.genereNouveauNumero(), TypeCompte.CHEQUE, 0);
-                nouveauCompteClient.ajouter(compteCheque);
-                comptes.add(nouveauCompteClient);
-                return true;
+
+        for (CompteClient compte : comptes) {
+            if (compte.getNumeroClient().equals(numCompteClient)) {
+                return false;
             }
+
         }
-        return this.comptes.add(new CompteClient(numCompteClient,nip)); //À modifier
+
+            CompteClient nouveauCompteClient = new CompteClient(numCompteClient, nip);
+            String numeroCompteBanquaire;
+
+            do {
+                numeroCompteBanquaire = CompteBancaire.genereNouveauNumero();
+            }
+            while (getNumeroCompteParDefaut(numeroCompteBanquaire) != null);
+
+            CompteCheque compteCheque = new CompteCheque(numeroCompteBanquaire, TypeCompte.CHEQUE, 0);
+
+            nouveauCompteClient.ajouter(compteCheque);
+
+            comptes.add(nouveauCompteClient);
+
+            return true;
+
     }
 
     /**

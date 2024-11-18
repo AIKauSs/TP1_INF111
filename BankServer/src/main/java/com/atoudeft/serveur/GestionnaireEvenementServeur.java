@@ -91,12 +91,13 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     numCompteClient = t[0];
                     nip = t[1];
 
+                    CompteClient cptClient = banque.getCompteClient(numCompteClient);
+
                     t = serveurBanque.list().split(":");
                     // passe a travers tous les clients connectés
                     for (String clients : t) {
 
-                        if (Objects.equals(clients, numCompteClient) || banque.getCompteClient(numCompteClient) == null
-                                || !Objects.equals(banque.getCompteClient(numCompteClient).getNip(), nip)) {
+                        if (Objects.equals(clients, numCompteClient)) {
                             cnx.envoyer("CONNECT NO");
                             break;
 
@@ -114,7 +115,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     argument = evenement.getArgument().toUpperCase();
 
                     //Le client doit être sur son compte client
-                    if (Objects.equals(cnx.getNumeroCompteClient(), banque.getCompteClient(cnx.getNumeroCompteClient()).getNumeroClient())) {
+                    if (cnx.getNumeroCompteClient() != null) {
 
                         switch (argument) {
 
@@ -209,10 +210,10 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                 cnx.envoyer("DEPOT NO montant invalide");
             } else {
                 String numCompteActuel = cnx.getNumeroCompteActuel();
-                CompteBancaire compte = banque.getCompteClient(numCompteClient).getCompteBancaire(numCompteActuel);
-                if (compte == null) {
+
+                if (banque.getCompteClient(numCompteClient) == null) {
                     cnx.envoyer("DEPOT NO compte introuvable");
-                } else if (compte.crediter(montant)) {
+                } else if (banque.deposer(montant, numCompteActuel)) {
                     cnx.envoyer("DEPOT OK " + montant + "$ déposés sur le compte " + numCompteActuel);
                 } else {
                     cnx.envoyer("DEPOT NO erreur lors du dépôt");
