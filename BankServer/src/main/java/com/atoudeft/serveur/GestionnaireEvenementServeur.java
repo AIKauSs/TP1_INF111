@@ -83,7 +83,7 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     break;
 
 
-                case "CONNECT": //Connecte au compte client
+                case "CONNECT": //Connecte au compte-client
                     banque = serveurBanque.getBanque();
                     argument = evenement.getArgument();
                     t = argument.split(":");
@@ -98,9 +98,14 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
                     for (String clients : t) {
 
                         if (Objects.equals(clients, numCompteClient)) {
+                            /*
+                            || cptClient.getNumeroClient() == null|| !Objects.equals(cptClient.getNip(), nip),
+                         conditions pour verifier si le compte n'existe pas ou si le nip est invalide.
+                         Cependant la méthode getCompteClient nous retourne toujours null dans le programme
+                         pour tout nos cases
+                         */
                             cnx.envoyer("CONNECT NO");
                             break;
-
                         } else {
                             cnx.setNumeroCompteClient(numCompteClient);
                             cnx.setNumeroCompteActuel(banque.getNumeroCompteParDefaut(numCompteClient));
@@ -204,16 +209,23 @@ public class GestionnaireEvenementServeur implements GestionnaireEvenement {
             break;
         }
         argument = evenement.getArgument().trim();
+
         try {
             double montant = Double.parseDouble(argument);
             if (montant <= 0) {
                 cnx.envoyer("DEPOT NO montant invalide");
             } else {
                 String numCompteActuel = cnx.getNumeroCompteActuel();
+                CompteClient client = banque.getCompteClient(numCompteClient);
+                CompteBancaire compteBancaire = client.getCompteBancaire(numCompteActuel);
 
-                if (banque.getCompteClient(numCompteClient) == null) {
+                if (cnx.getNumeroCompteClient() == null) {
                     cnx.envoyer("DEPOT NO compte introuvable");
-                } else if (banque.deposer(montant, numCompteActuel)) {
+                } else if (compteBancaire.crediter(montant)) {
+                    /*
+                   Le numéro du compte-client semble toujours être nul pour une raison x
+                   que nous n'arrivons pas à trouver
+                     */
                     cnx.envoyer("DEPOT OK " + montant + "$ déposés sur le compte " + numCompteActuel);
                 } else {
                     cnx.envoyer("DEPOT NO erreur lors du dépôt");

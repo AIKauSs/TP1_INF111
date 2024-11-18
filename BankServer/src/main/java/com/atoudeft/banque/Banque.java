@@ -3,6 +3,7 @@ package com.atoudeft.banque;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +108,7 @@ public class Banque implements Serializable {
                 (nip.length() < 4 || nip.length() > 5) || !nip.matches("[0-9]+")) {
             return false;
         }
-
+        // Passe à travers les comptes existant pour savoir si un compte existe déja, sinon on crée un compte
         for (CompteClient compte : comptes) {
             if (compte.getNumeroClient().equals(numCompteClient)) {
                 return false;
