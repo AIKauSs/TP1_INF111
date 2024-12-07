@@ -31,7 +31,7 @@ public class EcouteurOperationsCompte implements ActionListener {
 
 //Switch case pour chaque action des bouttons
             switch (action) {
-                case "Créer compte épargne":
+                case "EPARGNE":
                     client.envoyer("EPARGNE");
                     break;
 

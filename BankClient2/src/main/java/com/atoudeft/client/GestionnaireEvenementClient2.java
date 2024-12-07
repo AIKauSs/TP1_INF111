@@ -76,10 +76,12 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                         for (String s : t) {
                             panneauPrincipal.ajouterCompte(s.substring(0, s.indexOf("]") + 1));
                         }
+                        // Envoyer une commande SELECT au serveur pour obtenir le solde
+                        client.envoyer("SELECT cheque");
                     }
                     break;
                 /******************* SÉLECTION DE COMPTES *******************/
-                case "EPARGNE":
+                case "EPARGNE" :
                     arg = evenement.getArgument();
                     // Si le serveur renvoie "OK" suivi du numéro du compte épargne
                     if (arg.startsWith("OK")) {
@@ -95,6 +97,7 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                         // Si la création échoue, afficher un message d'erreur
                         JOptionPane.showMessageDialog(panneauPrincipal, "Erreur lors de la création du compte épargne.");
                     }
+
                     break;
                 case "SELECT":
                     // Récupérer la réponse du serveur
@@ -173,16 +176,25 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
 
                 case "TRANSFER":
                     arg = evenement.getArgument();
-                    String[] parts = arg.split(" ");
-                    if (parts.length >= 2) {
-                        String montant = parts[1];
-                        String destinataire = parts[2];
+                    if (arg.startsWith("OK")) {
+                        // Diviser la réponse pour extraire le nouveau solde
+                        String[] parts = arg.split(" ");
+                        if (parts.length >= 2) {
+                            double nouveauSolde = Double.parseDouble(parts[1]);
 
-                        // Confirmer le transfert
-                        JOptionPane.showMessageDialog(panneauPrincipal,
-                                "Transfert de " + montant + " $ vers le compte " + destinataire + " réussi.");
+                            // Mettre à jour le solde dans le panneau des opérations
+                            panneauPrincipal.getPanneauOperationsCompte().afficherSolde(nouveauSolde);
+
+                            // Afficher une confirmation à l'utilisateur
+                            JOptionPane.showMessageDialog(panneauPrincipal,
+                                    "Transfert effectué avec succès. Nouveau solde : " + nouveauSolde + " $");
+                        }
+                    } else {
+                        // En cas d'erreur, afficher un message
+                        JOptionPane.showMessageDialog(panneauPrincipal, "Erreur : le transfert a échoué.");
                     }
                     break;
+
                 /******************* TRAITEMENT PAR DÉFAUT *******************/
                 default:
                     System.out.println("RECU : " + evenement.getType() + " " + evenement.getArgument());
