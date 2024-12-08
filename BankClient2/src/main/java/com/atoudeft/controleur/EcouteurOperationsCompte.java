@@ -27,7 +27,7 @@ public class EcouteurOperationsCompte implements ActionListener {
         String action;
 
         if (source instanceof JButton) {
-            action = ((JButton) source).getActionCommand();  // Récupère le texte du bouton cliqué
+            action = ((JButton) source).getActionCommand();  // Récupère la commande du bouton cliqué
 
 //Switch case pour chaque action des bouttons
             switch (action) {
@@ -50,6 +50,14 @@ public class EcouteurOperationsCompte implements ActionListener {
                 case "FACTURE":
                     panneauOperationsCompte.afficherPanneau("FACTURE");
                     break;
+
+                case "HISTORIQUE":
+                    // Afficher le panneau Historique
+                    panneauOperationsCompte.afficherPanneau("HISTORIQUE");
+                    // Envoyer la commande HIST au serveur
+                    client.envoyer("HIST");
+                    break;
+
 
                     /*
                     pour toutes les operations suivantes on va dans le panneau correspondant

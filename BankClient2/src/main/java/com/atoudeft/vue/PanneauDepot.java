@@ -32,12 +32,12 @@ public class PanneauDepot extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Dépôt"));
     }
 
-    // Getter pour le champ de montant
+
     public JTextField getChampMontant() {
         return txtMontant;
     }
 
-    // Getter pour le bouton effectuer
+
     public JButton getBoutonEffectuer() {
         return btnEffectuer;
     }

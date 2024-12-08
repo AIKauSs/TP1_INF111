@@ -3,6 +3,7 @@ package com.atoudeft.client;
 import com.atoudeft.commun.evenement.Evenement;
 import com.atoudeft.commun.evenement.GestionnaireEvenement;
 import com.atoudeft.commun.net.Connexion;
+import com.atoudeft.vue.PanneauHistorique;
 import com.atoudeft.vue.PanneauPrincipal;
 import com.programmes.MainFrame;
 
@@ -42,12 +43,22 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                     client.deconnecter(); //On ferme la connexion
                     break;
                 /******************* CREATION et CONNEXION *******************/
-//                case "HIST": //Le serveur a renvoyé
-//                    panneauPrincipal.setVisible(true);
-//                    JOptionPane.showMessageDialog(null,"Panneau visible");
-//                    cnx.envoyer("LIST");
-//                    arg = evenement.getArgument();
-//                    break;
+                case "HIST":
+                    arg = evenement.getArgument();
+                    if (arg != null && !arg.trim().isEmpty()) {
+                        PanneauHistorique panneauHistorique = panneauPrincipal.getPanneauHistorique();
+                        panneauHistorique.setHistorique(arg.trim());
+                        panneauHistorique.afficherHistoriqueDialog();
+                    } else {
+                        JOptionPane.showMessageDialog(panneauPrincipal,
+                                "Aucun historique disponible.",
+                                "Historique des opérations",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    break;
+
+
+
                 case "OK":
                     panneauPrincipal.setVisible(true);
                     fenetre = (MainFrame) panneauPrincipal.getTopLevelAncestor();
@@ -81,7 +92,7 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                     }
                     break;
                 /******************* SÉLECTION DE COMPTES *******************/
-                case "EPARGNE" :
+                case "EPARGNE":
                     arg = evenement.getArgument();
                     // Si le serveur renvoie "OK" suivi du numéro du compte épargne
                     if (arg.startsWith("OK")) {
@@ -109,7 +120,7 @@ public class GestionnaireEvenementClient2 implements GestionnaireEvenement {
                         break;
                     }
 
-                    // Vérifier si le serveur a répondu "OK <numCompte> <solde>"
+                    // Vérifier si le serveur a répondu "OK"
                     if (arg.startsWith("OK")) {
                         // Découper la réponse pour prendre le solde
                         String[] responseParts = arg.split(" ");

@@ -62,8 +62,6 @@ public class PanneauFacture extends JPanel {
 
         setBorder(BorderFactory.createTitledBorder("Paiement de Facture"));
     }
-
-    // Getters pour les champs et le bouton
     public JTextField getTxtNumeroFacture() {
         return txtNumeroFacture;
     }

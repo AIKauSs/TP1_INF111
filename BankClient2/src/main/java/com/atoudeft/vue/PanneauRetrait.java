@@ -32,12 +32,12 @@ public class PanneauRetrait extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Retrait"));
     }
 
-    // Getter pour le champ de montant
+
     public JTextField getChampMontant() {
         return txtMontant;
     }
 
-    // Getter pour le bouton effectuer
+
     public JButton getBoutonEffectuer() {
         return btnEffectuer;
     }

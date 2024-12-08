@@ -23,10 +23,13 @@ public class PanneauPrincipal  extends JPanel {
     private DefaultListModel<String> numerosComptes;
     private JList<String> jlNumerosComptes;
     private JDesktopPane bureau;
+    private PanneauHistorique panneauHistorique;
 
 
     public PanneauPrincipal(Client client) {
         this.client = client;
+
+        panneauHistorique = new PanneauHistorique();
 
         panneauConnexion = new PanneauConnexion();
         panneauConnexion.setEcouteur(new EcouteurConnexion(client,panneauConnexion));
@@ -92,5 +95,9 @@ public class PanneauPrincipal  extends JPanel {
 
     public PanneauOperationsCompte getPanneauOperationsCompte() {
         return panneauOperationsCompte;
+    }
+
+    public PanneauHistorique getPanneauHistorique() {
+        return panneauHistorique;
     }
 }

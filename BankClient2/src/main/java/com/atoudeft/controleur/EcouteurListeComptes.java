@@ -26,6 +26,7 @@ public class EcouteurListeComptes extends MouseAdapter {
             JList<String> listeCompte = (JList<String>) evt.getSource();
             int compteSelect = listeCompte.locationToIndex(evt.getPoint());
 
+            // On verifie si le compte existe
             if (compteSelect != -1) {
                 // Récupère l'élément sélectionné (supposons que c'est une String)
                 Object compte = listeCompte.getModel().getElementAt(compteSelect);

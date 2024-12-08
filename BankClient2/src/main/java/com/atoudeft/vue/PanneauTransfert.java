@@ -42,17 +42,17 @@ public class PanneauTransfert extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Transfert"));
     }
 
-    // Getter pour le champ de montant
+
     public JTextField getChampMontant() {
         return txtMontant;
     }
 
-    // Getter pour le champ destinataire
+
     public JTextField getChampDestinataire() {
         return txtDestinataire;
     }
 
-    // Getter pour le bouton effectuer
+
     public JButton getBoutonEffectuer() {
         return btnEffectuer;
     }
